@@ -231,32 +231,6 @@ RaceDay/
 └── ...
 ```
 
-## Final Submission Checklist
-
-* [ ] Part 1 ERD completed
-* [ ] Part 1 API endpoint plan completed
-* [ ] Part 1 SQL database script completed
-* [ ] Part 2 C# RESTful API completed
-* [ ] API connected to the database
-* [ ] Role-based API access implemented
-* [ ] Unit tests completed
-* [ ] GitHub Actions workflow added
-* [ ] CI/CD workflow passes with a green check mark
-* [ ] Part 3 MVC application completed
-* [ ] MVC application consumes the API
-* [ ] Azure Blob Storage integrated
-* [ ] Docker containerisation completed
-* [ ] Organiser functionality demonstrated
-* [ ] Participant functionality demonstrated
-* [ ] Minimum 20 meaningful commits completed for Part 1
-* [ ] Minimum 20 meaningful commits completed for Part 2
-* [ ] Minimum 20 meaningful commits completed for Part 3
-* [ ] Part 1 video uploaded to YouTube as unlisted
-* [ ] Part 2 video uploaded to YouTube as unlisted
-* [ ] Part 3 video uploaded to YouTube as unlisted
-* [ ] YouTube links added to the README
-* [ ] CI/CD green-build screenshot added
-* [ ] Final setup instructions completed
 
 ## Project Status
 
@@ -269,6 +243,6 @@ RaceDay/
 ## Author
 
 **Student:** Lungelwa S'phesihle Mazibuko
-**Module:** PROG212
+**Module:** PROG6212
 **Project:** RaceDay Event Management System
 ::: 
