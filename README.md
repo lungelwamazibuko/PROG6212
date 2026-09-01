@@ -16,6 +16,10 @@ Organisers can create, edit, and delete events, manage event categories, view ev
 
 Participants can create an account, browse events, enter events by selecting a category, view their enrolments, and track their personal results.
 
+## Admin 
+
+Oversees all race day operations, from scheduling and participant management to live tracking and results. Coordinates with officials, volunteers, and vendors to ensure a smooth, safe, and engaging event. Manages registrations, timing systems, and post-race reports while resolving issues quickly to keep the race running flawlessly.
+
 Role-based access is enforced at the API level in Part 2 and reflected consistently in the MVC application in Part 3.
 
 ## Project Parts
@@ -213,9 +217,10 @@ Tests should cover important API functionality, validation, and role-based acces
 RaceDay/
 │
 ├── Part1/
-│   ├── ERD/
-│   ├── API-Plan/
-│   └── Database/
+│   └── docs
+│         ├── ERD/
+│         ├── API-Plan/
+│         └── Database/
 │
 ├── Part2/
 │   ├── RaceDay.API/
@@ -243,6 +248,7 @@ RaceDay/
 ## Author
 
 **Student:** Lungelwa S'phesihle Mazibuko
+**Student Number:**  ST10232490
 **Module:** PROG6212
 **Project:** RaceDay Event Management System
 ::: 
