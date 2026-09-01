@@ -1,4 +1,4 @@
-# RaceDay – Event Management System
+# RaceDay – Event Management System - ST10232490
 
 ## PROG212 Portfolio of Evidence (POE)
 
@@ -248,7 +248,10 @@ RaceDay/
 ## Author
 
 **Student:** Lungelwa S'phesihle Mazibuko
+
 **Student Number:**  ST10232490
+
 **Module:** PROG6212
+
 **Project:** RaceDay Event Management System
 ::: 
