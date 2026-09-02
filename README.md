@@ -310,7 +310,7 @@ RaceDay/
 
 | Part | Description | Status |
 | :--- | :--- | :--- |
-| Part 1 | ERD, API endpoint plan, and SQL database | In Progress |
+| Part 1 | ERD, API endpoint plan, and SQL database | Completed |
 | Part 2 | C# RESTful API, database connection, unit tests, and CI/CD | Pending |
 | Part 3 | MVC application, Azure Blob Storage, and Docker | Pending |
 
