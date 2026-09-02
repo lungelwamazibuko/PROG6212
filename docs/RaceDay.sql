@@ -8,17 +8,17 @@ USE RaceDayDB;
 -- STEP 2: CREATE ROLE TABLE
 -- ============================================================
 
-CREATE TABLE Role(
+CREATE TABLE tblRoles (
 RoleID      INT PRIMARY KEY,
 RoleName    VARCHAR(50) NOT NULL UNIQUE,
-Description VARCHAR(255) NULL
+RoleDescription VARCHAR(255) NULL
 );
 
 -- ============================================================
 -- STEP 3: CREATE USER TABLE
 -- ============================================================
 
-CREATE TABLE [User] (
+CREATE TABLE tblUsers (
 UserID       INT PRIMARY KEY,
 RoleID       INT NOT NULL,
 FullName     VARCHAR(100) NOT NULL,
@@ -27,30 +27,30 @@ PasswordHash VARCHAR(255) NOT NULL,
 PhoneNumber  VARCHAR(20) NULL,
 CreatedAt    DATETIME NOT NULL DEFAULT GETDATE(),
 AccountStatus VARCHAR(20) NOT NULL DEFAULT 'Active',
-CONSTRAINT FK_User_Role FOREIGN KEY (RoleID) REFERENCES Role(RoleID)
+CONSTRAINT FK_User_Role FOREIGN KEY (RoleID) REFERENCES tblRoles(RoleID)
 );
 
 -- ============================================================
 -- STEP 4: CREATE EVENT TABLE
 -- ============================================================
 
-CREATE TABLE Event (
+CREATE TABLE tblEvents (
 EventID      INT PRIMARY KEY,
 OrganiserID  INT NOT NULL,
 EventName    VARCHAR(150) NOT NULL,
-Description  VARCHAR(500) NULL,
+EventDescription  VARCHAR(500) NULL,
 EventDate    DATE NOT NULL,
-Location     VARCHAR(150) NOT NULL,
-Status       VARCHAR(30) NOT NULL DEFAULT 'Scheduled',
+EventLocation     VARCHAR(150) NOT NULL,
+EventStatus       VARCHAR(30) NOT NULL DEFAULT 'Scheduled',
 CreatedAt    DATETIME NOT NULL DEFAULT GETDATE(),
-CONSTRAINT FK_Event_Organiser FOREIGN KEY (OrganiserID) REFERENCES [User](UserID)
+CONSTRAINT FK_Event_Organiser FOREIGN KEY (OrganiserID) REFERENCES tblUsers(UserID)
 );
 
 -- ============================================================
 -- STEP 5: CREATE WEATHER TABLE
 -- ============================================================
 
-CREATE TABLE Weather (
+CREATE TABLE tblWeather (
 WeatherID        INT PRIMARY KEY,
 EventID          INT NOT NULL,
 Temperature      DECIMAL(5,2) NOT NULL,
@@ -58,7 +58,7 @@ WeatherCondition VARCHAR(100) NOT NULL,
 WindSpeed        DECIMAL(6,2) NOT NULL,
 Humidity         INT NOT NULL,
 ForecastTime     DATETIME NOT NULL,
-CONSTRAINT FK_Weather_Event FOREIGN KEY (EventID) REFERENCES Event(EventID),
+CONSTRAINT FK_Weather_Event FOREIGN KEY (EventID) REFERENCES tblEvents(EventID),
 CONSTRAINT CK_Weather_Humidity CHECK (Humidity BETWEEN 0 AND 100),
 CONSTRAINT CK_Weather_WindSpeed CHECK (WindSpeed >= 0)
 );
@@ -68,16 +68,16 @@ CONSTRAINT CK_Weather_WindSpeed CHECK (WindSpeed >= 0)
 -- STEP 6: CREATE ROUTE TABLE
 -- ============================================================
 
-CREATE TABLE Route (
+CREATE TABLE tblRoutes (
 RouteID       INT PRIMARY KEY,
 EventID       INT NOT NULL,
 RouteName     VARCHAR(150) NOT NULL,
 DistanceKM    DECIMAL(8,2) NOT NULL,
 ElevationGain DECIMAL(8,2) NOT NULL,
 StartPoint    VARCHAR(150) NOT NULL,
-EndPoint      VARCHAR(150) NOT NULL,
+RouteEndPoint      VARCHAR(150) NOT NULL,
 MapDataURL    VARCHAR(500) NULL,
-CONSTRAINT FK_Route_Event FOREIGN KEY (EventID) REFERENCES Event(EventID),
+CONSTRAINT FK_Route_Event FOREIGN KEY (EventID) REFERENCES tblEvents(EventID),
 CONSTRAINT CK_Route_Distance CHECK (DistanceKM > 0),
 CONSTRAINT CK_Route_Elevation CHECK (ElevationGain >= 0)
 );
@@ -87,7 +87,7 @@ CONSTRAINT CK_Route_Elevation CHECK (ElevationGain >= 0)
 -- STEP 7: CREATE CATEGORY TABLE
 -- ============================================================
 
-CREATE TABLE Category (
+CREATE TABLE tblCategory (
 CategoryID        INT PRIMARY KEY,
 EventID           INT NOT NULL,
 RouteID           INT NOT NULL,
@@ -97,8 +97,8 @@ EntryFee          DECIMAL(10,2) NOT NULL,
 MaxParticipants   INT NOT NULL,
 GenderRestriction VARCHAR(30) NOT NULL DEFAULT 'Open',
 AgeGroup          VARCHAR(50) NOT NULL,
-CONSTRAINT FK_Category_Event FOREIGN KEY (EventID) REFERENCES Event(EventID),
-CONSTRAINT FK_Category_Route FOREIGN KEY (RouteID) REFERENCES Route(RouteID),
+CONSTRAINT FK_Category_Event FOREIGN KEY (EventID) REFERENCES tblEvents(EventID),
+CONSTRAINT FK_Category_Route FOREIGN KEY (RouteID) REFERENCES tblRoutes(RouteID),
 CONSTRAINT CK_Category_Distance CHECK (DistanceKM > 0),
 CONSTRAINT CK_Category_EntryFee CHECK (EntryFee >= 0),
 CONSTRAINT CK_Category_MaxParticipants CHECK (MaxParticipants > 0)
@@ -109,15 +109,15 @@ CONSTRAINT CK_Category_MaxParticipants CHECK (MaxParticipants > 0)
 -- STEP 8: CREATE REGISTRATION TABLE
 -- ============================================================
 
-CREATE TABLE Registration (
+CREATE TABLE tblRegistrations (
 RegistrationID     INT PRIMARY KEY,
 UserID             INT NOT NULL,
 CategoryID         INT NOT NULL,
 RegistrationDate   DATETIME NOT NULL DEFAULT GETDATE(),
 BibNumber          INT NOT NULL UNIQUE,
 RegistrationStatus VARCHAR(30) NOT NULL DEFAULT 'Confirmed',
-CONSTRAINT FK_Registration_User FOREIGN KEY (UserID) REFERENCES [User](UserID),
-CONSTRAINT FK_Registration_Category FOREIGN KEY (CategoryID) REFERENCES Category(CategoryID),
+CONSTRAINT FK_Registration_User FOREIGN KEY (UserID) REFERENCES tblUsers(UserID),
+CONSTRAINT FK_Registration_Category FOREIGN KEY (CategoryID) REFERENCES tblCategory(CategoryID),
 CONSTRAINT CK_Registration_BibNumber CHECK (BibNumber > 0)
 );
 
@@ -125,7 +125,7 @@ CONSTRAINT CK_Registration_BibNumber CHECK (BibNumber > 0)
 -- STEP 9: CREATE RESULT TABLE
 -- ============================================================
 
-CREATE TABLE Result (
+CREATE TABLE tblResults (
 ResultID       INT PRIMARY KEY,
 RegistrationID INT NOT NULL,
 StartTime      TIME NOT NULL,
@@ -133,7 +133,7 @@ FinishTime     TIME NULL,
 Position       INT NULL,
 Pace           DECIMAL(6,2) NULL,
 ResultStatus   VARCHAR(30) NOT NULL DEFAULT 'Completed',
-CONSTRAINT FK_Result_Registration FOREIGN KEY (RegistrationID) REFERENCES Registration(RegistrationID),
+CONSTRAINT FK_Result_Registration FOREIGN KEY (RegistrationID) REFERENCES tblRegistrations(RegistrationID),
 CONSTRAINT CK_Result_Position CHECK (Position IS NULL OR Position > 0),
 CONSTRAINT CK_Result_Pace CHECK (Pace IS NULL OR Pace > 0)
 );
@@ -142,7 +142,7 @@ CONSTRAINT CK_Result_Pace CHECK (Pace IS NULL OR Pace > 0)
 -- STEP 10: INSERT ROLES
 -- ============================================================
 
-INSERT INTO Role (RoleID, RoleName, Description) VALUES
+INSERT INTO tblRoles (RoleID, RoleName, RoleDescription) VALUES
 (1, 'Admin', 'System administrator'),
 (2, 'Organiser', 'Creates and manages RaceDay events'),
 (3, 'Participant', 'Registers for and participates in events');
@@ -153,7 +153,7 @@ INSERT INTO Role (RoleID, RoleName, Description) VALUES
 -- 2 Organisers and 2 Participants
 -- ============================================================
 
-INSERT INTO [User] (UserID, RoleID, FullName, Email, PasswordHash, PhoneNumber, CreatedAt, AccountStatus) VALUES
+INSERT INTO tblUsers (UserID, RoleID, FullName, Email, PasswordHash, PhoneNumber, CreatedAt, AccountStatus) VALUES
 (1, 2, 'Thabo Mokoena', 'thabo.mokoena@gmail.com',
     'HASH_001', '0825551001', '2026-01-10 09:00:00', 'Active'),
 (2, 2, 'Lerato Dlamini', 'lerato.dlamini@gmail.com',
@@ -171,7 +171,7 @@ INSERT INTO [User] (UserID, RoleID, FullName, Email, PasswordHash, PhoneNumber, 
 -- Minimum required: 3 Events
 -- ============================================================
 
-INSERT INTO Event (EventID, OrganiserID, EventName, Description, EventDate, Location, Status, CreatedAt) VALUES
+INSERT INTO tblEvents (EventID, OrganiserID, EventName, EventDescription, EventDate, EventLocation, EventStatus, CreatedAt) VALUES
 (1, 1, 'Durban Coastal Run',
     'A coastal road race along the Durban beachfront.',
     '2026-09-12', 'Durban, KwaZulu-Natal', 'Scheduled', '2026-03-01 09:00:00'),
@@ -186,7 +186,7 @@ INSERT INTO Event (EventID, OrganiserID, EventName, Description, EventDate, Loca
 -- STEP 13: INSERT WEATHER
 -- ============================================================
 
-INSERT INTO Weather (WeatherID, EventID, Temperature, WeatherCondition, WindSpeed, Humidity, ForecastTime) VALUES
+INSERT INTO tblWeather (WeatherID, EventID, Temperature, WeatherCondition, WindSpeed, Humidity, ForecastTime) VALUES
     (1, 1, 22.50, 'Partly Cloudy', 12.00, 68, '2026-09-12 06:00:00'),
     (2, 2, 23.00, 'Sunny', 10.50, 62, '2026-10-10 06:00:00'),
     (3, 3, 21.00, 'Clear', 8.00, 60, '2026-11-07 06:00:00');
@@ -197,7 +197,7 @@ INSERT INTO Weather (WeatherID, EventID, Temperature, WeatherCondition, WindSpee
 -- Each event has a route.
 -- ============================================================
 
-INSERT INTO Route (RouteID, EventID, RouteName, DistanceKM, ElevationGain, StartPoint, EndPoint, MapDataURL) VALUES
+INSERT INTO tblRoutes (RouteID, EventID, RouteName, DistanceKM, ElevationGain, StartPoint, RouteEndPoint, MapDataURL) VALUES
 (1, 1, 'Durban Beachfront Route', 10.00, 85.00,
     'Moses Mabhida Stadium', 'Golden Mile',
     'https://www.google.com/maps/dir/?api=1&origin=Moses+Mabhida+Stadium,+Durban,+South+Africa&destination=Golden+Mile,+Durban,+South+Africa'),
@@ -217,7 +217,7 @@ INSERT INTO Route (RouteID, EventID, RouteName, DistanceKM, ElevationGain, Start
 -- Each of the three events has multiple categories.
 -- ============================================================
 
-INSERT INTO Category (CategoryID, EventID, RouteID, CategoryName, DistanceKM, EntryFee, MaxParticipants, GenderRestriction, AgeGroup) VALUES
+INSERT INTO tblCategory (CategoryID, EventID, RouteID, CategoryName, DistanceKM, EntryFee, MaxParticipants, GenderRestriction, AgeGroup) VALUES
 (1, 1, 1, '10 KM Open', 10.00, 150.00, 500, 'Open', '18+'),
 (2, 1, 1, '10 KM Women', 10.00, 150.00, 300, 'Female', '18+'),
 (3, 2, 2, 'Half Marathon Open', 21.10, 250.00, 600, 'Open', '18+'),
@@ -231,7 +231,7 @@ INSERT INTO Category (CategoryID, EventID, RouteID, CategoryName, DistanceKM, En
 -- Sample participant enrolments.
 -- ============================================================
 
-INSERT INTO Registration (RegistrationID, UserID, CategoryID, RegistrationDate, BibNumber, RegistrationStatus) VALUES
+INSERT INTO tblRegistrations (RegistrationID, UserID, CategoryID, RegistrationDate, BibNumber, RegistrationStatus) VALUES
 (1, 3, 1, '2026-06-01 09:30:00', 1001, 'Confirmed'),
 (2, 4, 1, '2026-06-02 10:15:00', 1002, 'Confirmed'),
 (3, 3, 3, '2026-06-05 11:00:00', 2001, 'Confirmed'),
@@ -245,7 +245,7 @@ INSERT INTO Registration (RegistrationID, UserID, CategoryID, RegistrationDate, 
 -- before the participant completes the event.
 -- ============================================================
 
-INSERT INTO Result (ResultID, RegistrationID, StartTime, FinishTime, Position, Pace, ResultStatus) VALUES
+INSERT INTO tblResults (ResultID, RegistrationID, StartTime, FinishTime, Position, Pace, ResultStatus) VALUES
 (1, 1, '07:00:00', '07:52:30', 12, 5.25, 'Completed'),
 (2, 2, '07:00:00', '08:05:10', 25, 6.52, 'Completed'),
 (3, 3, '06:30:00', '08:18:45', 18, 5.11, 'Completed');
@@ -257,14 +257,14 @@ INSERT INTO Result (ResultID, RegistrationID, StartTime, FinishTime, Position, P
 -- relationships can be retrieved successfully.
 -- ============================================================
 
-SELECT * FROM Role;
-SELECT * FROM [User];
-SELECT * FROM Event;
-SELECT * FROM Weather;
-SELECT * FROM Route;
-SELECT * FROM Category;
-SELECT * FROM Registration;
-SELECT * FROM Result;
+SELECT * FROM tblRoles;
+SELECT * FROM tblUsers;
+SELECT * FROM tblEvents;
+SELECT * FROM tblWeather;
+SELECT * FROM tblRoutes;
+SELECT * FROM tblCategory;
+SELECT * FROM tblRegistrations;
+SELECT * FROM tblResults;
 
 -- ============================================================
 -- END OF RACEDAY DATABASE SCRIPT
