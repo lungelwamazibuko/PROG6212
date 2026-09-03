@@ -248,7 +248,7 @@ Videos must be uploaded to YouTube as **unlisted videos**. AI-generated voices a
 
 ### Part 1 – System Planning
 
-YouTube: `ADD_PART_1_UNLISTED_YOUTUBE_LINK_HERE`
+YouTube: [Part 1](https://youtu.be/uLPcEjC0Wds)
 
 ### Part 2 – RESTful API
 
